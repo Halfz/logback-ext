@@ -172,29 +172,24 @@ public abstract class EncodingStringAppender<E extends DeferredProcessingAware, 
     }
 
     protected void doEncode(E event) {
-        try {
-            encoder.doEncode(event);
-        } catch (IOException ex) {
-            this.started = false;
-            addError(format("Failed to encode logging event for appender '%s'", getName()), ex);
-        }
+        encoder.encode(event);
     }
 
     protected void encoderInit(ByteArrayOutputStream stream) {
-        try {
-            encoder.init(stream);
-        } catch (IOException ex) {
-            this.started = false;
-            addError(format("Failed to initialize encoder for appender '%s'", getName()), ex);
-        }
+//        try {
+//            encoder.init(stream);
+//        } catch (IOException ex) {
+//            this.started = false;
+//            addError(format("Failed to initialize encoder for appender '%s'", getName()), ex);
+//        }
     }
 
     protected void encoderClose() {
-        try {
-            encoder.close();
-        } catch (Exception ex) {
-            this.started = false;
-            addError(format("Failed to close encoder for appender '%s'", getName()), ex);
-        }
+//        try {
+//            encoder.close();
+//        } catch (Exception ex) {
+//            this.started = false;
+//            addError(format("Failed to close encoder for appender '%s'", getName()), ex);
+//        }
     }
 }

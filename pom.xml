@@ -6,7 +6,7 @@
 
     <groupId>me.halfz</groupId>
     <artifactId>logback-ext</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>pom</packaging>
 
     <name>logback-ext</name>
@@ -36,9 +36,9 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <guava.version>18.0</guava.version>
-        <aws.version>1.11.39</aws.version>
-        <logback.version>1.1.11</logback.version>
+        <guava.version>24.0-jre</guava.version>
+        <aws.version>1.11.307</aws.version>
+        <logback.version>1.2.3</logback.version>
     </properties>
 
     <modules>
