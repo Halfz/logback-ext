@@ -12,10 +12,10 @@ package org.eluder.logback.ext.core;
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -40,7 +40,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static java.lang.String.format;
 
-public abstract class EncodingStringAppender<E extends DeferredProcessingAware, P> extends UnsynchronizedAppenderBase<E> {
+public abstract class EncodingStringAppender<E extends DeferredProcessingAware, P> extends
+        UnsynchronizedAppenderBase<E> {
 
     protected final ReentrantLock lock = new ReentrantLock(true);
 
@@ -136,16 +137,20 @@ public abstract class EncodingStringAppender<E extends DeferredProcessingAware, 
     @Override
     protected void append(E event) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        encode(event, stream);
+        try {
+            encode(event, stream);
+        } catch (IOException e) {
+            addError(format("Failed to handle logging event for '%s'", getName()), e);
+        }
         doHandle(event, convert(stream.toByteArray()));
     }
 
-    private void encode(E event, ByteArrayOutputStream stream) {
+    private void encode(E event, ByteArrayOutputStream stream) throws IOException {
         lock.lock();
         try {
             encoderInit(stream);
             try {
-                doEncode(event);
+                stream.write(doEncode(event));
             } finally {
                 encoderClose();
             }
@@ -171,11 +176,12 @@ public abstract class EncodingStringAppender<E extends DeferredProcessingAware, 
         }
     }
 
-    protected void doEncode(E event) {
-        encoder.encode(event);
+    protected byte[] doEncode(E event) {
+        return encoder.encode(event);
     }
 
     protected void encoderInit(ByteArrayOutputStream stream) {
+//        encoder.setContext();
 //        try {
 //            encoder.init(stream);
 //        } catch (IOException ex) {
